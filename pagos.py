@@ -28,5 +28,4 @@ def procesar_pago_usuario(
     monto_final += monto_final * tasa_impuesto
 
     tarjeta['saldo'] -= monto_final
-    return True
-    
+    return True    
