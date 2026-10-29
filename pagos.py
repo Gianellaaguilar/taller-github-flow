@@ -1,30 +1,32 @@
-def procesar_pago_usuario(usuario, tarjeta, monto, pais, es_vip):
-    if usuario != None:
-        if usuario['activo'] == True:
-            if tarjeta['saldo'] >= monto:
-                if es_vip == True:
-                    if monto > 1000:
-                        monto_final = monto * 0.80 # 20% descuento
-                    else:
-                        monto_final = monto * 0.90 # 10% descuento
-                else:
-                    monto_final = monto
-                
-                # Impuestos por país
-                if pais == "CO":
-                    monto_final += monto_final * 0.19
-                elif pais == "MX":
-                    monto_final += monto_final * 0.16
-                elif pais == "CL":
-                    monto_final += monto_final * 0.19
-                
-                tarjeta['saldo'] -= monto_final
-                return True
-            else:
-                print("Saldo insuficiente")
-                return False
-        else:
-            print("Usuario inactivo")
-            return False
-    else:
+IMPUESTOS_POR_PAIS = {
+    "CO": 0.19,
+    "MX": 0.16,
+    "CL": 0.19
+}
+
+
+def obtener_descuento(es_vip: bool, monto: float) -> float:
+    if es_vip and monto > 1000:
+        return 0.20
+    if es_vip:
+        return 0.10
+    return 0.0
+
+
+def procesar_pago_usuario(usuario: dict, tarjeta: dict, monto: float, pais: str, es_vip: bool) -> bool:
+    # Guard Clauses (Validadiones tempranas)
+    if not usuario or not usuario.get('activo', False):
         return False
+    if tarjeta.get('saldo', 0) < monto:
+        return False
+
+    # Descuento
+    porcentaje_descuento = obtener_descuento(es_vip, monto)
+    monto_final = monto * (1 - porcentaje_descuento)
+
+    # Impuesto
+    tasa_impuesto = IMPUESTOS_POR_PAIS.get(pais, 0.0)
+    monto_final += monto_final * tasa_impuesto
+
+    tarjeta['saldo'] -= monto_final
+    return True
