@@ -28,5 +28,5 @@ jobs:
 
       - name: Ejecutar Pruebas Unitarias y Validar Cobertura (Mínimo 90%)
         run: |
-          # Pytest corre las pruebas y exige que la cobertura global no baje del 80%
-          pytest --cov=tests --cov-fail-under=90 tests/
+          # Pytest mide el directorio raiz e imprime la tabla de cobertura con lineas faltantes
+          pytest --cov=. --cov-report=term-missing --cov-fail-under=90
