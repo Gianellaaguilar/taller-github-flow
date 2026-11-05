@@ -25,8 +25,7 @@ jobs:
         run: |
           # Evaluamos solo la complejidad y filtramos los errores de estilo de PEP 8 si se desea
           flake8 . --max-complexity=5 --select=C901
-
+          
       - name: Ejecutar Pruebas Unitarias y Validar Cobertura (Mínimo 90%)
         run: |
-          # Pytest mide el directorio raiz e imprime la tabla de cobertura con lineas faltantes
-          pytest --cov=. --cov-report=term-missing --cov-fail-under=90
+          pytest -o pythonpath=. --cov=test --cov-report=term-missing --cov-fail-under=90 test/
